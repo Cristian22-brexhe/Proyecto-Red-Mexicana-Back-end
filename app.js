@@ -1,3 +1,4 @@
+'use strict'
 const serviceDatabase = require('./services/database.service');
 const serviceServer = require('./services/server.service');
 

@@ -1,15 +1,18 @@
+'use strict'
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors')
+const cors = require('cors');
+const errorHandler = require('./../handlers/errors.handler');
+const adminService = require('./admin.service');
 const app = express();
 
 // Imports
-const params = require('./../params');
-const errorHandler = require('../handlers/errors.handler');
+const params = require('./../params'); 
 const routeWeb = require('./../routes')
 const routeApi = require('./../routes/api')
 
 app.use(cors())
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -17,10 +20,13 @@ app.use(bodyParser.json());
 app.use('/', routeWeb);
 app.use('/api', routeApi);
 
+app.use(adminService.path, adminService.router);
+
 app.use(errorHandler.pathNotFound);
 app.use(errorHandler.generalError);
 
-const initialize = async () => {
+const initialize = async (myApp) => {
+    // app = myApp; 
     const promise = new Promise((resolve, reject) => {
         app.listen(params.port)
             .on('listening', () => {
@@ -32,8 +38,8 @@ const initialize = async () => {
                 reject(error);
             });
 
-        // server.listen();
-        // Promise.resolve();
+        server.listen();
+        Promise.resolve();
     });
 
     await promise;
